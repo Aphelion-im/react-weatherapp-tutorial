@@ -4,10 +4,11 @@
 // Pages: ForecastTab, TodayTab
 
 import './App.css';
+import axios from 'axios';
 import SearchBar from './components/searchBar/SearchBar';
 import TabBarMenu from './components/tabBarMenu/TabBarMenu';
 import MetricSlider from './components/metricSlider/MetricSlider';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Variables
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
