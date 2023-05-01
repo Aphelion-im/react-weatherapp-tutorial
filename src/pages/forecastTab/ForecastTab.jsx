@@ -19,7 +19,7 @@ function ForecastTab({ coordinates }) {
     async function fetchForecasts() {
       try {
         const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`
+          `${BASE_URL}forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`
         );
         console.log(response.data);
 

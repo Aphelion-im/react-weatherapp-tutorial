@@ -24,7 +24,7 @@ export default function App() {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${location},nl&appid=${PUBLIC_KEY}&lang=nl`
+          `${BASE_URL}weather?q=${location},nl&appid=${PUBLIC_KEY}&lang=nl`
         );
         console.log(response.data);
         setWeatherData(response.data);
