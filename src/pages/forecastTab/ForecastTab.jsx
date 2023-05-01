@@ -1,5 +1,6 @@
+
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
 import './ForecastTab.css';
 
 // Variables
@@ -18,7 +19,7 @@ function ForecastTab({ coordinates }) {
     async function fetchForecasts() {
       try {
         const response = await axios.get(
-          `${BASE_URL}forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`
         );
         console.log(response.data);
 

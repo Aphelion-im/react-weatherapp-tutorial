@@ -4,13 +4,13 @@
 // Pages: App.jsx, ForecastTab, TodayTab
 // @H7.7
 
-import './App.css';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css';
 import SearchBar from './components/searchBar/SearchBar';
 import TabBarMenu from './components/tabBarMenu/TabBarMenu';
 import MetricSlider from './components/metricSlider/MetricSlider';
 import ForecastTab from './pages/forecastTab/ForecastTab';
-import { useState, useEffect } from 'react';
 
 // Variables
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
@@ -24,7 +24,7 @@ export default function App() {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `${BASE_URL}weather?q=${location},nl&appid=${PUBLIC_KEY}&lang=nl`
+          `https://api.openweathermap.org/data/2.5/weather?q=${location},nl&appid=${PUBLIC_KEY}&lang=nl`
         );
         console.log(response.data);
         setWeatherData(response.data);
