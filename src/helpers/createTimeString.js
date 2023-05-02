@@ -1,5 +1,3 @@
-'use strict';
-
 export default function createTimeString(timestamp) {
   const day = new Date(timestamp * 1000);
 
