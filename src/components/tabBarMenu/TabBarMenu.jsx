@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './TabBarMenu.css';
 
 function TabBarMenu() {
@@ -6,14 +7,24 @@ function TabBarMenu() {
     <nav className="tab-bar">
       <ul>
         <li>
-          <a className="active" href="/">
+          <NavLink
+            className={({ isActive }) =>
+              isActive === true ? 'active' : 'default'
+            }
+            to="/"
+          >
             Vandaag
-          </a>
+          </NavLink>
         </li>
         <li>
-          <a href="/">
+          <NavLink
+            className={({ isActive }) =>
+              isActive === true ? 'active' : 'default'
+            }
+            to="/komende-week"
+          >
             Komende week
-          </a>
+          </NavLink>
         </li>
       </ul>
     </nav>
