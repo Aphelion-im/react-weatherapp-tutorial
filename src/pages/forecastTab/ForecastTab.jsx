@@ -27,10 +27,11 @@ function ForecastTab({ coordinates }) {
       setError(false);
       toggleLoading(true);
 
-      // https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates?.lat}&lon=${coordinates?.lon}&exclude=minutely,current,hourly&appid=${PUBLIC_KEY}&lang=nl
+      // Sam: https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&exclude=minutely,current,hourly&appid={apiKey}&lang=nl
+      // Oude url: https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates?.lat}&lon=${coordinates?.lon}&exclude=minutely,current,hourly&appid=${PUBLIC_KEY}&lang=nl
       try {
         const result = await axios.get(
-          `${BASE_URL}onecall?lat=${coordinates?.lat}&lon=${coordinates?.lon}&exclude=minutely,current,hourly&appid=${PUBLIC_KEY}&lang=nl`
+          `${BASE_URL}forecast?lat=${coordinates?.lat}&lon=${coordinates?.lon}&exclude=minutely,current,hourly&appid=${PUBLIC_KEY}&lang=nl`
         );
         setForecasts(result.data.daily.slice(1, 6));
         toggleLoading(false);
