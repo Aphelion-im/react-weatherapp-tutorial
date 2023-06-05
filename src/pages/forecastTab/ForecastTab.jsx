@@ -15,66 +15,75 @@ import './ForecastTab.css';
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_APP_PUBLIC_KEY;
 
-function ForecastTab({ coordinates }) {
-  const [forecasts, setForecasts] = useState(null);
-  const [error, setError] = useState(false);
-  const [loading, toggleLoading] = useState(false);
 
-  const { kelvinToMetric } = useContext(TempContext);
 
-  useEffect(() => {
-    async function fetchData() {
-      setError(false);
-      toggleLoading(true);
 
-      // Sam: https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&exclude=minutely,current,hourly&appid={apiKey}&lang=nl
-      // Oude url: https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates?.lat}&lon=${coordinates?.lon}&exclude=minutely,current,hourly&appid=${PUBLIC_KEY}&lang=nl
-      try {
-        const result = await axios.get(
-          `${BASE_URL}forecast?lat=${coordinates?.lat}&lon=${coordinates?.lon}&exclude=minutely,current,hourly&appid=${PUBLIC_KEY}&lang=nl`
-        );
-        setForecasts(result.data.daily.slice(1, 6));
-        toggleLoading(false);
-      } catch (e) {
-        console.error(e);
-        setError(true);
-        toggleLoading(false);
-      }
-    }
 
-    if (coordinates) {
-      fetchData();
-    }
-  }, [coordinates]);
 
-  return (
-    <div className="tab-wrapper">
-      {forecasts &&
-        forecasts.map((forecast) => {
-          return (
-            <article className="forecast-day" key={forecast.dt}>
-              <p className="day-description">{createDateString(forecast.dt)}</p>
-              <section className="forecast-weather">
-                <span>{kelvinToMetric(forecast.temp.day)}</span>
-                <span className="weather-description">
-                  {forecast.weather[0].description}
-                </span>
-              </section>
-            </article>
-          );
-        })}
+function ForecastTab({coordinates}) {
+    const [forecasts, setForecasts] = useState([]);
+    const [error, toggleError] = useState(false);
+    const [loading, toggleLoading] = useState(false);
+    const { kelvinToMetric } = useContext(TempContext);
 
-      {!forecasts && !error && (
-        <span className="no-forecast">
-          Zoek eerst een locatie om het weer voor deze week te bekijken
-        </span>
-      )}
+    useEffect(() => {
+            async function fetchForecasts() {
+                toggleLoading(true);
+                try {
+                    const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`);
+                    if (response.data){
+                        toggleError(false);
+                    }
+                    const fiveDayForecast = response.data.list.filter((oneForecast) => {
+                            return oneForecast.dt_txt.includes("12:00:00");
+                        }
+                    );
+                    setForecasts(fiveDayForecast);
+                } catch (e) {
+                    console.error(e);
+                    toggleError(true);
+                }
+                toggleLoading(false);
+            }
 
-      {error && <span>Er is iets misgegaan met het ophalen van de data.</span>}
 
-      {loading && <span>Loading...</span>}
-    </div>
-  );
+            if (coordinates) {
+                void fetchForecasts();
+            }
+        },
+        [coordinates]);
+
+
+    return (
+        <div className="tab-wrapper">
+            {error && <span>Er is iets misgegaan met het ophalen van de data</span>}
+            {loading && <span>Loading...</span>}
+            {forecasts.length === 0 && !error &&
+                <span className="no-forecast">
+      Zoek eerst een locatie om het weer voor deze week te bekijken
+    </span>
+            }
+            {forecasts.map((day) => {
+                return (
+                    <article className="forecast-day" key={day.dt}>
+                        <p className="day-description">
+                            {createDateString(day.dt)}
+                        </p>
+                        <section className="forecast-weather">
+            <span>
+             {kelvinToMetric(day.main.temp)}
+            </span>
+                            <span className="weather-description">
+              {day.weather[0].description}
+            </span>
+                        </section>
+                    </article>
+                )
+            })}
+
+
+        </div>
+    );
 }
 
 export default ForecastTab;
