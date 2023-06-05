@@ -15,70 +15,62 @@ import './ForecastTab.css';
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_APP_PUBLIC_KEY;
 
-function ForecastTab({coordinates}) {
-    const [forecasts, setForecasts] = useState([]);
-    const [error, toggleError] = useState(false);
-    const [loading, toggleLoading] = useState(false);
-    const { kelvinToMetric } = useContext(TempContext);
+function ForecastTab({ coordinates }) {
+  const [forecasts, setForecasts] = useState([]);
+  const [error, toggleError] = useState(false);
+  const [loading, toggleLoading] = useState(false);
+  const { kelvinToMetric } = useContext(TempContext);
 
-    useEffect(() => {
-            async function fetchForecasts() {
-                toggleLoading(true);
-                try {
-                    const response = await axios.get(`${BASE_URL}/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`);
-                    if (response.data){
-                        toggleError(false);
-                    }
-                    const fiveDayForecast = response.data.list.filter((oneForecast) => {
-                            return oneForecast.dt_txt.includes("12:00:00");
-                        }
-                    );
-                    setForecasts(fiveDayForecast);
-                } catch (e) {
-                    console.error(e);
-                    toggleError(true);
-                }
-                toggleLoading(false);
-            }
+  useEffect(() => {
+    async function fetchForecasts() {
+      toggleLoading(true);
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`
+        );
+        if (response.data) {
+          toggleError(false);
+        }
+        const fiveDayForecast = response.data.list.filter((oneForecast) => {
+          return oneForecast.dt_txt.includes('12:00:00');
+        });
+        setForecasts(fiveDayForecast);
+      } catch (e) {
+        console.error(e);
+        toggleError(true);
+      }
+      toggleLoading(false);
+    }
 
+    if (coordinates) {
+      void fetchForecasts();
+    }
+  }, [coordinates]);
 
-            if (coordinates) {
-                void fetchForecasts();
-            }
-        },
-        [coordinates]);
-
-
-    return (
-        <div className="tab-wrapper">
-            {error && <span>Er is iets misgegaan met het ophalen van de data</span>}
-            {loading && <span>Loading...</span>}
-            {forecasts.length === 0 && !error &&
-                <span className="no-forecast">
-      Zoek eerst een locatie om het weer voor deze week te bekijken
-    </span>
-            }
-            {forecasts.map((day) => {
-                return (
-                    <article className="forecast-day" key={day.dt}>
-                        <p className="day-description">
-                            {createDateString(day.dt)}
-                        </p>
-                        <section className="forecast-weather">
-            <span>
-             {kelvinToMetric(day.main.temp)}
-            </span>
-                            <span className="weather-description">
-              {day.weather[0].description}
-            </span>
-                        </section>
-                    </article>
-                )
-            })}
-
-
-        </div>
-    );
+  return (
+    <div className="tab-wrapper">
+      {error && <span>Er is iets misgegaan met het ophalen van de data</span>}
+      {loading && <span>Loading...</span>}
+      {forecasts.length === 0 && !error && (
+        <span className="no-forecast">
+          Zoek eerst een locatie om het weer voor deze week te bekijken
+        </span>
+      )}
+      {forecasts.map((day) => {
+        return (
+          <article className="forecast-day" key={day.dt}>
+            <p className="day-description">{createDateString(day.dt)}</p>
+            <section className="forecast-weather">
+              <span>{kelvinToMetric(day.main.temp)}</span>
+              <span className="weather-description">
+                {day.weather[0].description}
+              </span>
+            </section>
+          </article>
+        );
+      })}
+    </div>
+  );
 }
 
 export default ForecastTab;
