@@ -15,11 +15,6 @@ import './ForecastTab.css';
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_APP_PUBLIC_KEY;
 
-
-
-
-
-
 function ForecastTab({coordinates}) {
     const [forecasts, setForecasts] = useState([]);
     const [error, toggleError] = useState(false);
@@ -30,7 +25,7 @@ function ForecastTab({coordinates}) {
             async function fetchForecasts() {
                 toggleLoading(true);
                 try {
-                    const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`);
+                    const response = await axios.get(`${BASE_URL}/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${PUBLIC_KEY}&lang=nl`);
                     if (response.data){
                         toggleError(false);
                     }
