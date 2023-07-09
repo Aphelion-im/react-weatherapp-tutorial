@@ -41,6 +41,7 @@ function App() {
           `${BASE_URL}weather?q=${location},nl&appid=${PUBLIC_KEY}&lang=nl`
         );
         setWeatherData(result.data);
+        console.log('Location: ', location);
       } catch (e) {
         console.error(e);
         setError(true);
@@ -49,6 +50,10 @@ function App() {
       toggleLoading(false);
     }
 
+    // Omdat location state standaard leeg is, alleen fetchData aanroepen als 
+    // er een zoekterm was ingevuld.
+    // Als onderstaande if weglaten, dan geeft de API als standaard antwoord Zwolle weer.
+    // Zie: https://youtu.be/jc9_Bqzy2YQ?t=1246
     if (location) {
       fetchData();
     }
